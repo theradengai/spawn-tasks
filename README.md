@@ -2,6 +2,8 @@
 
 A [Claude Code](https://claude.ai/code) skill that spawns parallel Claude Code sessions from planned subtasks. Each session gets its own git worktree and tmux pane with full task context.
 
+![demo](demo.gif)
+
 ## What it does
 
 After you break down a project into subtasks in a Claude Code conversation, `/spawn-tasks` will:
@@ -9,6 +11,14 @@ After you break down a project into subtasks in a Claude Code conversation, `/sp
 1. Write self-contained task files to `.tasks/spawn/` in your project
 2. Spawn an independent `claude` session for each task via `claude -w <name> --tmux`
 3. Each session gets its own isolated git worktree — no conflicts between parallel sessions
+
+## Smart spawning
+
+`/spawn-tasks` doesn't blindly parallelize. Before spawning, Claude analyzes the task dependencies. If the tasks are sequential (e.g. schema changes must land before other work can follow), it will say so and recommend running them in order instead.
+
+![not-parallel](demo-sequential.png)
+
+Only truly independent tasks get spawned in parallel.
 
 ## Installation
 
@@ -22,7 +32,7 @@ cp SKILL.md ~/.claude/skills/spawn-tasks/SKILL.md
 Or clone this repo directly:
 
 ```bash
-git clone https://github.com/<your-username>/spawn-tasks ~/.claude/skills/spawn-tasks
+git clone https://github.com/theradengai/spawn-tasks ~/.claude/skills/spawn-tasks
 ```
 
 ## Usage
