@@ -1,6 +1,6 @@
 # spawn-tasks
 
-A [Claude Code](https://claude.ai/code) skill that spawns parallel Claude Code sessions from planned subtasks. Each session gets its own git worktree and tmux pane with full task context.
+A [Claude Code](https://claude.ai/code) skill that spawns parallel Claude Code sessions from planned subtasks. Each session gets its own git worktree with full task context. Automatically detects the environment and chooses the best spawning method — tmux panes in terminal, or background Agent workers in desktop apps.
 
 ![demo](demo.gif)
 
@@ -9,7 +9,7 @@ A [Claude Code](https://claude.ai/code) skill that spawns parallel Claude Code s
 After you break down a project into subtasks in a Claude Code conversation, `/spawn-tasks` will:
 
 1. Write self-contained task files to `.tasks/spawn/` in your project
-2. Spawn an independent `claude` session for each task via `claude -w <name> --tmux`
+2. Auto-detect the environment and spawn sessions using the best available method
 3. Each session gets its own isolated git worktree — no conflicts between parallel sessions
 
 ## Smart spawning
@@ -40,13 +40,22 @@ git clone https://github.com/theradengai/spawn-tasks ~/.claude/skills/spawn-task
 1. In a Claude Code session, plan and confirm your subtasks with Claude
 2. Run `/spawn-tasks`
 3. Claude will show you the task list and ask for confirmation before spawning
-4. Sessions open as new tmux panes (falls back to Terminal.app windows on macOS if tmux is not installed)
+4. Sessions are spawned automatically using the best method for your environment
+
+## Environment auto-detection
+
+| Environment | Method | How it works |
+|---|---|---|
+| Terminal (iTerm2, Terminal.app, etc.) | tmux panes | `claude -w <name> --tmux` — real-time visibility, switch panes with Ctrl+B |
+| Desktop app / IDE terminal | Agent workers | Background agents with worktree isolation — results reported on completion |
+
+Detection is automatic (`test -t 0`). No configuration needed.
 
 ## Requirements
 
 - [Claude Code](https://claude.ai/code) CLI (`claude`)
-- tmux (recommended) or macOS Terminal.app
 - A git repository (worktrees require git)
+- tmux (optional, for terminal pane mode)
 
 ## How sessions are isolated
 
