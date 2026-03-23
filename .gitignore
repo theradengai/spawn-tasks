@@ -1,0 +1,16 @@
+# Demo recording artifacts
+demo/
+demo*.mov
+demo1.gif
+demo2.gif
+
+# Personal notes
+submit-*.md
+
+# OS files
+.DS_Store
+*.swp
+*~
+
+# Claude Code worktrees
+.claude/worktrees/
